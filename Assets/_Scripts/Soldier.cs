@@ -5,7 +5,6 @@ public class Soldier : MonoBehaviour
 {
 
     public Animator animator;
-
     public Transform spriteTransform;
 
 	void Start () 

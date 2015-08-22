@@ -52,6 +52,8 @@ public class MonsterController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+
+
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60, 60);
@@ -155,6 +157,7 @@ public class MonsterController : MonoBehaviour
 
     IEnumerator ChargeJump()
     {
+        GetComponent<JumpPreview>().SetDrawPath(true);
         chargingJump = true;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -165,6 +168,8 @@ public class MonsterController : MonoBehaviour
             jumpforce = Mathf.SmoothDamp(jumpforce, maxJumpForce, ref jumpVel, timeToChargeJump);
             jumpDir = Vector3.SmoothDamp(jumpDir, new Vector3(0, .4f, 1), ref jumpDirVel, timeToChargeJump);
 
+            GetComponent<JumpPreview>().force = transform.rotation * jumpDir * jumpforce * 100;
+
             Debug.DrawLine(transform.position, transform.position + (transform.rotation * jumpDir * jumpforce));
             print(string.Format("JumpForce: {0}", jumpforce));
             yield return null;
@@ -173,6 +178,7 @@ public class MonsterController : MonoBehaviour
         rb.AddForce((transform.rotation * jumpDir * jumpforce * 100));
 
         chargingJump = false;
+        GetComponent<JumpPreview>().SetDrawPath(false);
         yield return null;
     }
 }

@@ -166,7 +166,7 @@ public class MonsterController : MonoBehaviour
         while(Input.GetButton("Jump"))
         {
             jumpforce = Mathf.SmoothDamp(jumpforce, maxJumpForce, ref jumpVel, timeToChargeJump);
-            jumpDir = Vector3.SmoothDamp(jumpDir, new Vector3(0, .4f, 1), ref jumpDirVel, timeToChargeJump);
+            jumpDir = Vector3.SmoothDamp(jumpDir, new Vector3(0, .35f, 1), ref jumpDirVel, timeToChargeJump);
 
             GetComponent<JumpPreview>().force = transform.rotation * jumpDir * jumpforce * 100;
 

@@ -3,6 +3,9 @@ using System.Collections;
 
 public class MonsterController : MonoBehaviour 
 {
+    public Animator clawAnimator;
+    public Animator impalerAnimator;
+
     public float mouseSensitivityX = 250f;
     public float mouseSensitivityY = 250f;
     public float walkSpeed = 2;
@@ -35,9 +38,17 @@ public class MonsterController : MonoBehaviour
     float _doubleTapTimeD;
     float _doubleTapTimeA;
 
+    public float timeToMakeNoise = 2;
+    float noiseMakeTime;
+    public float idleNoise = 3;
+    public float movingNoise = 5;
+    public float jumpingNoise = 10;
+
 	// Use this for initialization
 	void Start () 
     {
+        noiseMakeTime = Time.time;
+
         jumpDir = new Vector3(1, 0, 0);
         cameraT = Camera.main.transform;
         rb = this.GetComponent<Rigidbody>();
@@ -66,6 +77,22 @@ public class MonsterController : MonoBehaviour
         bool doubleTapD = DoubleTapD();
 
         moveAmount =  Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+        
+        moveAmount *= (Input.GetKey(KeyCode.LeftShift) ? .5f : 1f);
+
+        float moveAmountSqrMag = moveAmount.sqrMagnitude;
+
+        clawAnimator.SetFloat("Speed", moveAmountSqrMag);
+        impalerAnimator.SetFloat("Speed", moveAmountSqrMag);
+        impalerAnimator.SetBool("ChargingJump", chargingJump);
+
+        if (!chargingJump)
+            idleNoiseCheck(moveAmountSqrMag);
+
+        clawAnimator.SetBool("Attack", false);
+
+        if (Input.GetMouseButtonDown(0))
+            clawAnimator.SetTrigger("Attack");
 
         grounded = false;
 
@@ -101,6 +128,24 @@ public class MonsterController : MonoBehaviour
             }
         }
 	}
+
+    void idleNoiseCheck(float MoveAmount)
+    {
+        if(Time.time - noiseMakeTime >= timeToMakeNoise)
+        {
+            if (MoveAmount >= 8f)
+                MakeNoise(movingNoise);
+            else
+                MakeNoise(idleNoise);
+        }
+    }
+
+    void MakeNoise(float NoiseRange)
+    {
+        noiseMakeTime = Time.time;
+
+        GameBroadcaster.Instance.OnPlayerMadeNoise(this.gameObject, NoiseRange);
+    }
 
     bool DoubleTapD()
     {
@@ -171,12 +216,12 @@ public class MonsterController : MonoBehaviour
             GetComponent<JumpPreview>().force = transform.rotation * jumpDir * jumpforce * 100;
 
             Debug.DrawLine(transform.position, transform.position + (transform.rotation * jumpDir * jumpforce));
-            print(string.Format("JumpForce: {0}", jumpforce));
+            //print(string.Format("JumpForce: {0}", jumpforce));
             yield return null;
         }
 
         rb.AddForce((transform.rotation * jumpDir * jumpforce * 100));
-
+        MakeNoise(jumpingNoise);
         chargingJump = false;
         GetComponent<JumpPreview>().SetDrawPath(false);
         yield return null;

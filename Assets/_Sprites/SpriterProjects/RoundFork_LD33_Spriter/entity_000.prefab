@@ -25,7 +25,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 488512}
   - 212: {fileID: 21250952}
-  - 114: {fileID: 11418826}
+  - 114: {fileID: 11463376}
   m_Layer: 0
   m_Name: leg_0 copy_000
   m_TagString: Untagged
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 498332}
   - 212: {fileID: 21263848}
-  - 114: {fileID: 11463422}
+  - 114: {fileID: 11434434}
   m_Layer: 0
   m_Name: head_happy copy
   m_TagString: Untagged
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 451772}
   - 212: {fileID: 21269832}
-  - 114: {fileID: 11488592}
+  - 114: {fileID: 11411114}
   m_Layer: 0
   m_Name: leg_0 copy
   m_TagString: Untagged
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 414566}
   - 212: {fileID: 21295360}
-  - 114: {fileID: 11441448}
+  - 114: {fileID: 11417384}
   m_Layer: 0
   m_Name: chest copy
   m_TagString: Untagged
@@ -4254,71 +4254,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11418826
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 106994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DisplayedSprite: 0
-  Sprites:
-  - {fileID: 21300000, guid: 1f49ba058a88f2545b14e12bca3f1ede, type: 3}
-  - {fileID: 21300000, guid: b5b4aa66d3ad1904a8617c557b9b347f, type: 3}
-  - {fileID: 21300000, guid: fe0caeb1a50ff76449411b63214abaca, type: 3}
-  - {fileID: 21300000, guid: 4855bcb5fb528ef448e05fc327a11433, type: 3}
-  - {fileID: 21300000, guid: 0279325a95379404ba89930084768cba, type: 3}
-  - {fileID: 21300000, guid: ce9afc5afe9943740972bb3c58b7a45b, type: 3}
---- !u!114 &11434800
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 124770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8e9dda14b6f34517a0d598d3320a902, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sortingOrder: 0
-  applySpriterZOrder: 0
---- !u!114 &11441448
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DisplayedSprite: 0
-  Sprites:
-  - {fileID: 21300000, guid: 8c3e5575f98a4b44b81002b687a958b0, type: 3}
-  - {fileID: 21300000, guid: 9e6c0f7efa956a449a8bf0852e1ab71d, type: 3}
---- !u!114 &11463422
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DisplayedSprite: 0
-  Sprites:
-  - {fileID: 21300000, guid: 4bc2f6fd84a7fac4aaaf73c5c77fb2a7, type: 3}
-  - {fileID: 21300000, guid: 24c565a7b8bca9645bf126fd285a96ac, type: 3}
-  - {fileID: 21300000, guid: 78564a657509d5d418b66b52bea2285d, type: 3}
-  - {fileID: 21300000, guid: 147c707c16aa2fb47b89201809444d40, type: 3}
---- !u!114 &11488592
+--- !u!114 &11411114
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -4337,6 +4273,70 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fe0caeb1a50ff76449411b63214abaca, type: 3}
   - {fileID: 21300000, guid: ce9afc5afe9943740972bb3c58b7a45b, type: 3}
   - {fileID: 21300000, guid: 0279325a95379404ba89930084768cba, type: 3}
+--- !u!114 &11417384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayedSprite: 0
+  Sprites:
+  - {fileID: 21300000, guid: 8c3e5575f98a4b44b81002b687a958b0, type: 3}
+  - {fileID: 21300000, guid: 9e6c0f7efa956a449a8bf0852e1ab71d, type: 3}
+--- !u!114 &11434434
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayedSprite: 0
+  Sprites:
+  - {fileID: 21300000, guid: 4bc2f6fd84a7fac4aaaf73c5c77fb2a7, type: 3}
+  - {fileID: 21300000, guid: 24c565a7b8bca9645bf126fd285a96ac, type: 3}
+  - {fileID: 21300000, guid: 78564a657509d5d418b66b52bea2285d, type: 3}
+  - {fileID: 21300000, guid: 147c707c16aa2fb47b89201809444d40, type: 3}
+--- !u!114 &11434800
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 124770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e9dda14b6f34517a0d598d3320a902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortingOrder: 0
+  applySpriterZOrder: 0
+--- !u!114 &11463376
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 106994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d8dc87df01e4958ab48153b19f0ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayedSprite: 0
+  Sprites:
+  - {fileID: 21300000, guid: 1f49ba058a88f2545b14e12bca3f1ede, type: 3}
+  - {fileID: 21300000, guid: b5b4aa66d3ad1904a8617c557b9b347f, type: 3}
+  - {fileID: 21300000, guid: fe0caeb1a50ff76449411b63214abaca, type: 3}
+  - {fileID: 21300000, guid: 4855bcb5fb528ef448e05fc327a11433, type: 3}
+  - {fileID: 21300000, guid: 0279325a95379404ba89930084768cba, type: 3}
+  - {fileID: 21300000, guid: ce9afc5afe9943740972bb3c58b7a45b, type: 3}
 --- !u!212 &21204536
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -77,7 +77,7 @@ public class JumpPreview : MonoBehaviour
         sightLine.SetColors(startColor, endColor);
 
         sightLine.SetVertexCount(num);
-        for (int i = 0; i <= num; i++)
+        for (int i = 0; i < num; i++)
             sightLine.SetPosition(i, segments[i]);
 
         Reticule.position = segments[num];

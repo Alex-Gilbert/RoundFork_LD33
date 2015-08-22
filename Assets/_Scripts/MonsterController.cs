@@ -6,9 +6,10 @@ public class MonsterController : MonoBehaviour
     public float mouseSensitivityX = 250f;
     public float mouseSensitivityY = 250f;
     public float walkSpeed = 2;
-    public float maxJumpForce;
+    public float maxJumpForce;    
     public float timeToChargeJump;
-    
+    public float leapForce = 3;
+
     public LayerMask groundMask;
 
     Transform cameraT;
@@ -31,6 +32,9 @@ public class MonsterController : MonoBehaviour
 
     bool checkingForLeap = false;
 
+    float _doubleTapTimeD;
+    float _doubleTapTimeA;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -41,7 +45,8 @@ public class MonsterController : MonoBehaviour
 
     public void FixedUpdate()
     {
-        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        if(!chargingJump)
+            rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
     }
 	
 	// Update is called once per frame
@@ -54,6 +59,9 @@ public class MonsterController : MonoBehaviour
 
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
         Vector3 targetMoveAmount = moveDir * walkSpeed;
+
+        bool doubleTapA = DoubleTapA();
+        bool doubleTapD = DoubleTapD();
 
         moveAmount =  Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
@@ -69,72 +77,100 @@ public class MonsterController : MonoBehaviour
         }
         Debug.DrawLine(transform.position, transform.position - transform.up * 1.1f, chargingJump ? Color.green : Color.red);
 
-        if(Input.GetButton("Jump") && !chargingJump)
+        if(Input.GetButton("Jump") && !chargingJump && grounded)
         {
             StopCoroutine(ChargeJump());
             StartCoroutine(ChargeJump());
         }
+
+        if(!chargingJump && grounded)
+        {
+            if (doubleTapA)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.AddForce(transform.rotation * new Vector3(-1, .35f, 0) * 100 * leapForce);
+            }
+            else if (doubleTapD)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.AddForce(transform.rotation * new Vector3(1, .35f, 0) * 100 * leapForce);
+            }
+        }
 	}
 
-    IEnumerator Leap(bool left)
+    bool DoubleTapD()
     {
-        checkingForLeap = true;
-        float timeSinceTap = 0;
+        bool doubleTapD = false;
 
-        bool letGo = false;
-        while(timeSinceTap < .25f)
+        #region doubleTapD
+
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            timeSinceTap += Time.deltaTime;
-            if(Input.GetAxisRaw("Horizontal") == 0)
+            if (Time.time < _doubleTapTimeD + .25f)
             {
-                letGo = true;
-                break;
+                doubleTapD = true;
             }
-            yield return null;
+            _doubleTapTimeD = Time.time;
         }
 
-        bool leap = false;
-        if(letGo)
-        {
-            timeSinceTap = 0;
-            while (timeSinceTap < .25f)
-            {
-                timeSinceTap += Time.deltaTime;
-                if ((left && Input.GetAxisRaw("Horizontal") == -1) || (!left && Input.GetAxisRaw("Horizontal") == 1))
-                {
-                    leap = true;
-                    break;
-                }
-                yield return null;
-            }
+        #endregion
 
-            if(leap)
-            {
-                
-                rb.AddForce(transform.rotation * new Vector3(left?-1:1, .5f, 0) * 100);
-            }
+        if (doubleTapD)
+        {
+            Debug.Log("DoubleTapD");
+            return true;
         }
 
-        checkingForLeap = false;
-        yield return null;
+        return false;
     }
+
+    bool DoubleTapA()
+    {
+        bool doubleTapA = false;
+
+        #region doubleTapA
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (Time.time < _doubleTapTimeA + .25f)
+            {
+                doubleTapA = true;
+            }
+            _doubleTapTimeA = Time.time;
+        }
+
+        #endregion
+
+        if (doubleTapA)
+        {
+            Debug.Log("DoubleTapA");
+            return true;
+        }
+
+        return false;
+    }
+
 
     IEnumerator ChargeJump()
     {
         chargingJump = true;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
         jumpforce = 0;
         jumpDir = new Vector3(0, 0, 1);
         while(Input.GetButton("Jump"))
         {
             jumpforce = Mathf.SmoothDamp(jumpforce, maxJumpForce, ref jumpVel, timeToChargeJump);
-            jumpDir = Vector3.SmoothDamp(jumpDir, new Vector3(0, .5f, 1), ref jumpDirVel, timeToChargeJump);
+            jumpDir = Vector3.SmoothDamp(jumpDir, new Vector3(0, .4f, 1), ref jumpDirVel, timeToChargeJump);
 
             Debug.DrawLine(transform.position, transform.position + (transform.rotation * jumpDir * jumpforce));
             print(string.Format("JumpForce: {0}", jumpforce));
             yield return null;
         }
 
-        rb.AddForce((transform.rotation * jumpDir * jumpforce * 75));
+        rb.AddForce((transform.rotation * jumpDir * jumpforce * 100));
 
         chargingJump = false;
         yield return null;

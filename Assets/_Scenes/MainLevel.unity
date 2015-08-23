@@ -1531,6 +1531,10 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10
+--- !u!4 &381650181 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 464586, guid: c104e05bd613ec24b9616a560a2c3db6, type: 2}
+  m_PrefabInternal: {fileID: 427056588}
 --- !u!1001 &427056588
 Prefab:
   m_ObjectHideFlags: 0
@@ -1582,6 +1586,14 @@ Prefab:
       propertyPath: timeToMakeNoise
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11459920, guid: c104e05bd613ec24b9616a560a2c3db6, type: 2}
+      propertyPath: SphereRadius
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11459920, guid: c104e05bd613ec24b9616a560a2c3db6, type: 2}
+      propertyPath: weaponT
+      value: 
+      objectReference: {fileID: 381650181}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c104e05bd613ec24b9616a560a2c3db6, type: 2}
   m_IsPrefabParent: 0
@@ -7277,6 +7289,10 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: f3fb852de0a05a747911a79afca4e5d1,
         type: 3}
+    - target: {fileID: 182198, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6551382, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: fe7410e0714f82d47803c803a8262b52, type: 2}

@@ -44,10 +44,15 @@ public class MonsterController : MonoBehaviour
     public float movingNoise = 5;
     public float jumpingNoise = 10;
 
+    public Transform weaponT;
+    public float SphereRadius;
+
 	// Use this for initialization
 	void Start () 
     {
         noiseMakeTime = Time.time;
+
+        GameBroadcaster.Instance.PlayerSwipeAttacked += HandlePlayerSwipeAttacked;
 
         jumpDir = new Vector3(1, 0, 0);
         cameraT = Camera.main.transform;
@@ -63,8 +68,6 @@ public class MonsterController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-
-
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60, 60);
@@ -199,6 +202,24 @@ public class MonsterController : MonoBehaviour
         return false;
     }
 
+    void HandlePlayerSwipeAttacked()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(weaponT.position, SphereRadius);
+
+        Debug.DrawLine(weaponT.position, weaponT.position + Vector3.up * SphereRadius);
+
+        for (int i = 0; i < hitColliders.Length; ++i)
+        {
+            if (hitColliders[i].tag == "Enemy")
+            {
+                hitColliders[i].SendMessage("OnHit");
+            }
+            else if (hitColliders[i].tag == "Interactable")
+            {
+                hitColliders[i].SendMessage("OnInteract");
+            }
+        }
+    }
 
     IEnumerator ChargeJump()
     {

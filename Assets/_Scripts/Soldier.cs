@@ -39,6 +39,14 @@ public class Soldier : MonoBehaviour
     public float TimeToShoot;
     float shootTime;
 
+    bool chasing = false;
+    public float timeToChase = 5;
+    float chaseTime;
+
+    bool alerted = false;
+    public float timeToStayAlert = 5;
+    float alertTime;
+
 	void Start () 
     {
         GameBroadcaster.Instance.PlayerMadeNoise += HandlePlayerMadeNoise;
@@ -50,6 +58,7 @@ public class Soldier : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        chasing = false;
         switch(state)
         { 
             case SoldierState.Patrol:
@@ -64,12 +73,14 @@ public class Soldier : MonoBehaviour
                 break;
             case SoldierState.Alerted:
                 print("I am alerted");
-                
+                animator.SetBool("Walking", false);
+                agent.SetDestination(transform.position);
                 LookForPlayer();
                 break;
             case SoldierState.Aggro:
                 print("I am aggroed");
-                if(Vector3.Distance(transform.position, playerT.position) <= playerShootRange && CanSeePlayer())
+                bool canSeePlayer = CanSeePlayer();
+                if(Vector3.Distance(transform.position, playerT.position) <= playerShootRange && canSeePlayer)
                 {
                     animator.SetBool("Walking", false);
                     agent.SetDestination(transform.position);
@@ -78,11 +89,38 @@ public class Soldier : MonoBehaviour
                 }
                 else
                 {
+                    chasing = true;
                     animator.SetBool("Walking", true);
                     agent.SetDestination(playerT.position);
                 }
                 break;
 
+        }
+
+        if(chasing)
+        {
+            if(Time.time - chaseTime >= timeToChase)
+            {
+                SwitchState(SoldierState.Alerted);
+                chasing = false;
+            }
+        }
+        else
+        {
+            chaseTime = Time.time;
+        }
+
+        if(state == SoldierState.Alerted)
+        {
+            if(Time.time - alertTime >= timeToStayAlert)
+            {
+                SwitchState(SoldierState.Patrol);
+                animator.SetTrigger("Calmed");
+            }
+        }
+        else
+        {
+            alertTime = Time.time;
         }
 
         float angleDif = 0;
@@ -94,6 +132,11 @@ public class Soldier : MonoBehaviour
 
 	    animator.SetFloat("AngleDif", angleDif);
 	}
+
+    void OnHit()
+    {
+        print("ow! Ive been hit");
+    }
 
     void Fire()
     {
@@ -115,6 +158,7 @@ public class Soldier : MonoBehaviour
                     if(Random.Range(0f,1f) < .5f)
                     {
                         print("I shot the player!");
+                        
                     }
                     else
                     {
@@ -203,6 +247,16 @@ public class Soldier : MonoBehaviour
         {
             animator.SetTrigger("Alerted");
             agent.SetDestination(transform.position);
+        }
+
+        if(newState == SoldierState.Alerted)
+        {
+            alertTime = Time.time;
+        }
+
+        if(newState == SoldierState.Patrol)
+        {
+            agent.SetDestination(patrolRoute[curWP].position);
         }
 
         state = newState;

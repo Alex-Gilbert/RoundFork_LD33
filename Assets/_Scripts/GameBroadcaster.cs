@@ -44,13 +44,19 @@ public class GameBroadcaster
         Debug.Log("PlayerAttacked");
     }
 
-    public event UnityAction PlayerShot;
-    public void OnPlayerShot(GameObject shooter, float damage)
+    public event UnityAction PlayerHit;
+    public void OnPlayerHit(GameObject shooter, float damage)
     {
-        if(PlayerShot != null)
+        if(PlayerHit != null)
         {
-            PlayerShot(shooter, damage);
+            PlayerHit(shooter, damage);
         }
     }
-    
+
+    public event UnityAction SoldierNeedsHelp;
+    public void OnSoldierNeedsHelp(GameObject soldier, float noise)
+    {
+        if (SoldierNeedsHelp != null)
+            SoldierNeedsHelp(soldier, noise);
+    }
 }

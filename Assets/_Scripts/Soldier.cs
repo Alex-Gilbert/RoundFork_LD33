@@ -6,6 +6,8 @@ public enum SoldierState
     Patrol,
     Alerted,
     Aggro,
+    Hurt,
+    Dead,
     ComingToAid,
 
 }
@@ -23,6 +25,7 @@ public class Soldier : MonoBehaviour
     public Transform playerT;
 
     public Animator animator;
+    AnimatorStateInfo stateInfo;
     public Transform spriteTransform;
 
     public float sightArcDegree;
@@ -49,8 +52,15 @@ public class Soldier : MonoBehaviour
     public float timeToStayAlert = 5;
     float alertTime;
 
+    public float shotDamage = .25f;
+
+    public int health = 4;
+
+    Vector3 woundedSoldierPosition;
+
 	void Start () 
     {
+        GameBroadcaster.Instance.SoldierNeedsHelp += HandleSoldierNeedsHelp;
         GameBroadcaster.Instance.PlayerMadeNoise += HandlePlayerMadeNoise;
 
         agent = GetComponent<NavMeshAgent>();
@@ -60,6 +70,10 @@ public class Soldier : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        if (state != SoldierState.Dead)
+        {
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
         chasing = false;
         switch(state)
         { 
@@ -78,6 +92,7 @@ public class Soldier : MonoBehaviour
                 animator.SetBool("Walking", false);
                 agent.SetDestination(transform.position);
                 LookForPlayer();
+                RotateTowardsPlayer();
                 break;
             case SoldierState.Aggro:
                 print("I am aggroed");
@@ -96,48 +111,82 @@ public class Soldier : MonoBehaviour
                     agent.SetDestination(playerT.position);
                 }
                 break;
+            case SoldierState.ComingToAid:
+                animator.SetBool("Walking", true);
+                agent.speed = PatrolSpeed * 2;
+                if(Vector3.Distance(transform.position, woundedSoldierPosition) <= 5)
+                {
+                    animator.SetBool("Walking", true);
+                    SwitchState(SoldierState.Alerted);
+                }
+                LookForPlayer();
+                break;
+            case SoldierState.Hurt:
+                if(!stateInfo.IsName("Hurt"))
+                {
+                    SwitchState(SoldierState.Alerted);
+                }
+                break;
 
         }
 
-        if(chasing)
-        {
-            if(Time.time - chaseTime >= timeToChase)
+        
+            if (chasing)
             {
-                SwitchState(SoldierState.Alerted);
-                chasing = false;
+                if (Time.time - chaseTime >= timeToChase)
+                {
+                    SwitchState(SoldierState.Alerted);
+                    chasing = false;
+                }
             }
-        }
-        else
-        {
-            chaseTime = Time.time;
-        }
-
-        if(state == SoldierState.Alerted)
-        {
-            if(Time.time - alertTime >= timeToStayAlert)
+            else
             {
-                SwitchState(SoldierState.Patrol);
-                animator.SetTrigger("Calmed");
+                chaseTime = Time.time;
             }
+
+            if (state == SoldierState.Alerted)
+            {
+                if (Time.time - alertTime >= timeToStayAlert)
+                {
+                    SwitchState(SoldierState.Patrol);
+                    animator.SetTrigger("Calmed");
+                }
+            }
+            else
+            {
+                alertTime = Time.time;
+            }
+
+            float angleDif = 0;
+
+            Debug.DrawRay(transform.position, transform.forward, Color.cyan);
+            Debug.DrawRay(transform.position, new Vector3(spriteTransform.forward.x, 0, spriteTransform.forward.z), Color.magenta);
+
+            angleDif = Quaternion.FromToRotation(transform.forward, new Vector3(spriteTransform.forward.x, 0, spriteTransform.forward.z)).eulerAngles.y;
+
+            animator.SetFloat("AngleDif", angleDif);
         }
-        else
-        {
-            alertTime = Time.time;
-        }
-
-        float angleDif = 0;
-
-        Debug.DrawRay(transform.position, transform.forward, Color.cyan);
-        Debug.DrawRay(transform.position, new Vector3(spriteTransform.forward.x, 0, spriteTransform.forward.z), Color.magenta);
-
-        angleDif = Quaternion.FromToRotation(transform.forward, new Vector3(spriteTransform.forward.x,0,spriteTransform.forward.z)).eulerAngles.y;
-
-	    animator.SetFloat("AngleDif", angleDif);
 	}
 
     void OnHit()
     {
-        print("ow! Ive been hit");
+        if (state != SoldierState.Dead)
+        {
+            GameBroadcaster.Instance.OnSoldierNeedsHelp(gameObject, 100);
+
+            SwitchState(SoldierState.Hurt);
+            animator.SetTrigger("Hurt");
+
+            health--;
+
+            if (health <= 0)
+            {
+                SwitchState(SoldierState.Dead);
+                animator.SetBool("Death", true);
+            }
+
+            print("ow! Ive been hit");
+        }
     }
 
     void Fire()
@@ -162,16 +211,22 @@ public class Soldier : MonoBehaviour
                 {
                     if (hit.collider.gameObject.tag == "Player")
                     {
-                        if (Random.Range(0f, 1f) < .66f)
-                        {
-                            
-                        }
-
+                        
+                        GameBroadcaster.Instance.OnPlayerHit(gameObject, shotDamage);
                     }
                 }
 
             }
         }
+    }
+
+    void RotateTowardsPlayer()
+    {
+        Vector3 toLookAt = playerT.position - transform.position;
+        toLookAt.y = 0;
+
+        Quaternion lr = Quaternion.LookRotation(toLookAt);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lr, 50 * Time.deltaTime);
     }
 
     void LookAtPlayer()
@@ -242,7 +297,7 @@ public class Soldier : MonoBehaviour
     void SwitchState(SoldierState newState)
     {
         curWP = 0;
-        if(state == SoldierState.Patrol)
+        if ((state == SoldierState.Patrol ))
         {
             animator.SetTrigger("Alerted");
             agent.SetDestination(transform.position);
@@ -256,27 +311,63 @@ public class Soldier : MonoBehaviour
         if(newState == SoldierState.Patrol)
         {
             agent.SetDestination(patrolRoute[curWP].position);
+            animator.SetTrigger("Calmed");
         }
 
         state = newState;
     }
 
+    void HandleSoldierNeedsHelp(GameObject soldier, float noise)
+    {
+        print("I can hear my brethren!");
+        if(state != SoldierState.Dead && !soldier.Equals(gameObject))
+        {
+            switch(state)
+            {
+                case SoldierState.Patrol:
+                    print("I can hear my brethren!");
+                    float distance = Vector3.Distance(soldier.transform.position, transform.position);
+                    if(distance <= noise)
+                    {
+                        if(distance <= noise * .5f)
+                        {
+                            SwitchState(SoldierState.Aggro);
+                        }
+                        else
+                        {
+                            woundedSoldierPosition = soldier.transform.position;
+                            SwitchState(SoldierState.ComingToAid);
+                            agent.SetDestination(woundedSoldierPosition);
+                        }
+                        
+                    }
+                    break;
+                case SoldierState.Alerted:
+                    SwitchState(SoldierState.Aggro);
+                    break;
+            }
+        }
+    }
+
     void HandlePlayerMadeNoise(GameObject player, float noiseRange)
     {
-        if (state != SoldierState.Aggro)
+        if (state != SoldierState.Dead)
         {
-            if (state == SoldierState.Alerted)
-                noiseRange *= 1.5f;
-
-            float distance = Vector3.Distance(player.transform.position, transform.position);
-            if (distance <= noiseRange)
+            if (state != SoldierState.Aggro)
             {
-                if (distance <= noiseRange * .5f)
-                    SwitchState(SoldierState.Aggro);
-                else
-                    SwitchState(SoldierState.Alerted);
+                if (state == SoldierState.Alerted)
+                    noiseRange *= 1.5f;
 
-                print("I hear the player");
+                float distance = Vector3.Distance(player.transform.position, transform.position);
+                if (distance <= noiseRange)
+                {
+                    if (distance <= noiseRange * .5f)
+                        SwitchState(SoldierState.Aggro);
+                    else
+                        SwitchState(SoldierState.Alerted);
+
+                    print("I hear the player");
+                }
             }
         }
     }

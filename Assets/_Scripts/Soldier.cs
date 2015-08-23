@@ -168,6 +168,16 @@ public class Soldier : MonoBehaviour
         }
 	}
 
+    void Executed()
+    {
+        Invoke("Delete", .2f);
+    }
+
+    void Delete()
+    {
+        gameObject.SetActive(false);
+    }
+
     void OnHit()
     {
         if (state != SoldierState.Dead)

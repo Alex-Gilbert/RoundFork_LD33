@@ -72,7 +72,16 @@ public class MonsterController : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
+        if(launched)
+        {
+            if(collision.gameObject.tag == "Enemy")
+            {
+                collision.gameObject.SendMessage("Executed");
+                impalerAnimator.SetTrigger("HitSoldier");
+            }
 
+            //End Launch
+        }
     }
 
 

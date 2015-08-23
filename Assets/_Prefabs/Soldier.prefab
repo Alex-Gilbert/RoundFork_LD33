@@ -134,6 +134,8 @@ MonoBehaviour:
   TimeToShoot: 1
   timeToChase: 5
   timeToStayAlert: 5
+  shotDamage: .25
+  health: 4
 --- !u!114 &11488088
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -7190,7 +7190,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 19.1700001
+      value: 19.4300003
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalPosition.y
@@ -7198,7 +7198,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -1.37
+      value: -3.88000011
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalRotation.x
@@ -7206,7 +7206,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -.70710665
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalRotation.z
@@ -7214,7 +7214,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: .707107008
       objectReference: {fileID: 0}
     - target: {fileID: 461660, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
       propertyPath: m_RootOrder
@@ -7260,6 +7260,23 @@ Prefab:
       propertyPath: patrolRoute.Array.data[3]
       value: 
       objectReference: {fileID: 1268979617}
+    - target: {fileID: 11481026, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
+      propertyPath: TimeToShoot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481026, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
+      propertyPath: sightArcDegree
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481026, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
+      propertyPath: raysToCast
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 21216686, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f3fb852de0a05a747911a79afca4e5d1,
+        type: 3}
     m_RemovedComponents:
     - {fileID: 6551382, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: fe7410e0714f82d47803c803a8262b52, type: 2}
@@ -7323,7 +7340,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!1 &1533533252
 GameObject:
   m_ObjectHideFlags: 0
@@ -7354,7 +7371,7 @@ Transform:
   - {fileID: 1564140788}
   - {fileID: 1268979617}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!43 &1539302891
 Mesh:
   m_ObjectHideFlags: 0

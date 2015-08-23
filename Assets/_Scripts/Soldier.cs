@@ -23,6 +23,9 @@ public class Soldier : MonoBehaviour
     public Animator animator;
     public Transform spriteTransform;
 
+    public float sightArcDegree;
+    public float raysToCast;
+
     public float rayCheckLength = 10;
     public float TimeToRayCheck;
     float rayCheckTime;
@@ -30,6 +33,11 @@ public class Soldier : MonoBehaviour
     NavMeshAgent agent;
 
     private SoldierState state = SoldierState.Patrol;
+
+    public float playerShootRange = 10;
+
+    public float TimeToShoot;
+    float shootTime;
 
 	void Start () 
     {
@@ -56,10 +64,23 @@ public class Soldier : MonoBehaviour
                 break;
             case SoldierState.Alerted:
                 print("I am alerted");
+                
                 LookForPlayer();
                 break;
             case SoldierState.Aggro:
                 print("I am aggroed");
+                if(Vector3.Distance(transform.position, playerT.position) <= playerShootRange && CanSeePlayer())
+                {
+                    animator.SetBool("Walking", false);
+                    agent.SetDestination(transform.position);
+                    LookAtPlayer();
+                    Fire();
+                }
+                else
+                {
+                    animator.SetBool("Walking", true);
+                    agent.SetDestination(playerT.position);
+                }
                 break;
 
         }
@@ -74,27 +95,104 @@ public class Soldier : MonoBehaviour
 	    animator.SetFloat("AngleDif", angleDif);
 	}
 
+    void Fire()
+    {
+        if(Time.time - shootTime >= TimeToShoot)
+        {
+            shootTime = Time.time;
+
+            Debug.DrawLine(transform.position, transform.position + transform.forward * playerShootRange, Color.red, .25f);
+
+            Ray ray = new Ray(transform.position, transform.forward);
+            RaycastHit hit;
+
+            animator.SetTrigger("Fire");
+
+            if (Physics.Raycast(ray, out hit, rayCheckLength))
+            {
+                if (hit.collider.gameObject.tag == "Player")
+                {
+                    if(Random.Range(0f,1f) < .5f)
+                    {
+                        print("I shot the player!");
+                    }
+                    else
+                    {
+                        print("I missed the player by chance!");
+                    }
+                    
+                }
+            }
+            else
+            {
+                print("I missed the player!");
+            }
+
+        }
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 fromRot = transform.forward;
+        Vector3 toRot = playerT.position - transform.position;
+
+        fromRot.y = 0;
+        toRot.y = 0;
+
+        Quaternion refShift = Quaternion.FromToRotation(fromRot, toRot);
+        transform.rotation *= refShift;
+    }
+
+    bool CanSeePlayer()
+    {
+        Vector3 dir = transform.forward;
+        Debug.DrawLine(transform.position, transform.position + dir * rayCheckLength, Color.green, .25f);
+
+        Ray ray = new Ray(transform.position, dir);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, rayCheckLength))
+        {
+            if (hit.collider.gameObject.tag == "Player")
+            {
+                print("I see the player!!");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void LookForPlayer()
     {
         if(Time.time - rayCheckTime >= TimeToRayCheck)
         {
             rayCheckTime = Time.time;
+            
+            Vector3 dir = transform.forward;
+            dir = Quaternion.Euler(0, sightArcDegree * .5f, 0) * dir;
 
-            Debug.DrawLine(transform.position, transform.position + transform.forward * rayCheckLength, Color.green, .25f);
+            Quaternion refShift = Quaternion.Euler(0, -(sightArcDegree/ raysToCast), 0);
 
-            Ray ray = new Ray(transform.position, transform.forward);
-            RaycastHit hit;
-
-            if(Physics.Raycast(ray, out hit, rayCheckLength))
+            for (int i = 0; i < raysToCast; ++i)
             {
-                if(hit.collider.gameObject.tag == "Player")
-                {
-                    print("I see the player!!");
-                    SwitchState(SoldierState.Aggro);
-                }
-            }
+                
+                Debug.DrawLine(transform.position, transform.position + dir * rayCheckLength, Color.green, .25f);
 
-            Debug.DrawRay(transform.position, transform.forward, Color.cyan);
+                Ray ray = new Ray(transform.position, dir);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, rayCheckLength))
+                {
+                    if (hit.collider.gameObject.tag == "Player")
+                    {
+                        print("I see the player!!");
+                        SwitchState(SoldierState.Aggro);
+                    }
+                }
+
+                dir = refShift * dir;
+            }
         }
     }
 
@@ -103,6 +201,7 @@ public class Soldier : MonoBehaviour
         curWP = 0;
         if(state == SoldierState.Patrol)
         {
+            animator.SetTrigger("Alerted");
             agent.SetDestination(transform.position);
         }
 
@@ -111,18 +210,21 @@ public class Soldier : MonoBehaviour
 
     void HandlePlayerMadeNoise(GameObject player, float noiseRange)
     {
-        if (state == SoldierState.Alerted)
-            noiseRange *= 1.5f;
-
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-        if(distance <= noiseRange)
+        if (state != SoldierState.Aggro)
         {
-            if (distance <= noiseRange * .5f)
-                SwitchState(SoldierState.Aggro);
-            else
-                SwitchState(SoldierState.Alerted);
+            if (state == SoldierState.Alerted)
+                noiseRange *= 1.5f;
 
-            print("I hear the player");
+            float distance = Vector3.Distance(player.transform.position, transform.position);
+            if (distance <= noiseRange)
+            {
+                if (distance <= noiseRange * .5f)
+                    SwitchState(SoldierState.Aggro);
+                else
+                    SwitchState(SoldierState.Alerted);
+
+                print("I hear the player");
+            }
         }
     }
 }

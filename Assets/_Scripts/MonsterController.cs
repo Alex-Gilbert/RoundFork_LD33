@@ -47,6 +47,12 @@ public class MonsterController : MonoBehaviour
     public Transform weaponT;
     public float SphereRadius;
 
+    public float TimeToStayDamaged = 4;
+    float damagedTime;
+
+    float healthVel;
+    public float healTime = .5f;
+
 	// Use this for initialization
 	void Start () 
     {

@@ -43,4 +43,14 @@ public class GameBroadcaster
 
         Debug.Log("PlayerAttacked");
     }
+
+    public event UnityAction PlayerShot;
+    public void OnPlayerShot(GameObject shooter, float damage)
+    {
+        if(PlayerShot != null)
+        {
+            PlayerShot(shooter, damage);
+        }
+    }
+    
 }

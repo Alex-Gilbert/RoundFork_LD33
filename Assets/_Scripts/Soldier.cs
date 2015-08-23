@@ -12,6 +12,8 @@ public enum SoldierState
 
 public class Soldier : MonoBehaviour 
 {
+
+
     public Transform[] patrolRoute;
 
     int curWP = 0;
@@ -144,34 +146,31 @@ public class Soldier : MonoBehaviour
         {
             shootTime = Time.time;
 
-            Debug.DrawLine(transform.position, transform.position + transform.forward * playerShootRange, Color.red, .25f);
-
-            Ray ray = new Ray(transform.position, transform.forward);
-            RaycastHit hit;
-
-            animator.SetTrigger("Fire");
-
-            if (Physics.Raycast(ray, out hit, rayCheckLength))
+            if (Random.Range(0f, 1f) < .75f)
             {
-                if (hit.collider.gameObject.tag == "Player")
+                print("I shot the player!");
+
+
+                Debug.DrawLine(transform.position, transform.position + transform.forward * playerShootRange, Color.red, .25f);
+
+                Ray ray = new Ray(transform.position, transform.forward);
+                RaycastHit hit;
+
+                animator.SetTrigger("Fire");
+
+                if (Physics.Raycast(ray, out hit, rayCheckLength))
                 {
-                    if(Random.Range(0f,1f) < .5f)
+                    if (hit.collider.gameObject.tag == "Player")
                     {
-                        print("I shot the player!");
-                        
-                    }
-                    else
-                    {
-                        print("I missed the player by chance!");
-                    }
-                    
-                }
-            }
-            else
-            {
-                print("I missed the player!");
-            }
+                        if (Random.Range(0f, 1f) < .66f)
+                        {
+                            
+                        }
 
+                    }
+                }
+
+            }
         }
     }
 
